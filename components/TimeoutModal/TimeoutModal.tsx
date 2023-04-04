@@ -1,18 +1,19 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback } from "react"
-import Button from "../Button"
-import { ReactPortal } from "../utils"
-import CircularProgressBar from "../CircularProgressBar"
+import React, { useCallback } from "react";
+import Button from "../Button";
+import { ReactPortal } from "../utils";
+import CircularProgressBar from "../CircularProgressBar";
 
 interface ModalProps {
-  modalTitle?: string
-  modalMessage?: string | JSX.Element
-  okText?: string
-  cancelText?: string
-  okAction?: () => void
-  cancelAction?: () => void
-  showModal: boolean
-  time?: number
+  modalTitle?: string;
+  modalMessage?: string | JSX.Element;
+  okText?: string;
+  cancelText?: string;
+  okAction?: () => void;
+  cancelAction?: () => void;
+  showModal: boolean;
+  time?: number;
+  props: any;
 }
 
 const TimeoutModal: React.FC<ModalProps> = React.forwardRef(
@@ -26,16 +27,17 @@ const TimeoutModal: React.FC<ModalProps> = React.forwardRef(
       okAction,
       cancelAction,
       showModal,
+      ...restProps
     },
     ref
   ) => {
-    const [show, setShow] = React.useState(showModal)
+    const [show, setShow] = React.useState(showModal);
 
     const cancelHandler = useCallback(() => {
-      return cancelAction && cancelAction()
-    }, [cancelAction])
+      return cancelAction && cancelAction();
+    }, [cancelAction]);
 
-    const close = React.useCallback(() => setShow(false), [])
+    const close = React.useCallback(() => setShow(false), []);
 
     React.useImperativeHandle(
       ref,
@@ -45,20 +47,28 @@ const TimeoutModal: React.FC<ModalProps> = React.forwardRef(
       }),
 
       []
-    )
+    );
 
     React.useEffect(() => {
-      setShow(showModal)
-    }, [showModal])
+      setShow(showModal);
+    }, [showModal]);
 
-    if (!show) return null
+    if (!show) return null;
     return (
       <ReactPortal wrapperId="react-portal-modal-container">
-        <div>
+        <div
+          {...restProps}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
           <div className="absolute top-[10%] left-0 flex justify-center z-[1055] w-full overflow-y-auto overflow-x-hidden outline-none">
             <div className=" bg-white rounded-xl mx-4 my-2 p-3">
               {modalTitle && (
-                <h3 className="text-6xl pt-2 pb-0 text-blue-600 text-center font-normal">
+                <h3
+                  id="modal-title"
+                  className="text-6xl pt-2 pb-0 text-blue-600 text-center font-normal"
+                >
                   {modalTitle}
                 </h3>
               )}
@@ -84,6 +94,7 @@ const TimeoutModal: React.FC<ModalProps> = React.forwardRef(
                     className="mw-[190px] w-full"
                     onClick={cancelHandler}
                     variant="default"
+                    aria-label={cancelText}
                   >
                     {cancelText}
                   </Button>
@@ -92,10 +103,11 @@ const TimeoutModal: React.FC<ModalProps> = React.forwardRef(
                   <Button
                     className="w-full"
                     onClick={() => {
-                      okAction()
-                      close()
+                      okAction();
+                      close();
                     }}
                     variant="primary"
+                    aria-label={okText}
                   >
                     {okText}
                   </Button>
@@ -106,8 +118,8 @@ const TimeoutModal: React.FC<ModalProps> = React.forwardRef(
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </div>
       </ReactPortal>
-    )
+    );
   }
-)
+);
 
-export default TimeoutModal
+export default TimeoutModal;
