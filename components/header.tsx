@@ -1,67 +1,67 @@
-import React, { useCallback } from "react"
-import Link from "next/link"
-import { signIn, signOut, useSession } from "next-auth/react"
-import Button from "../components/Button"
-import styles from "./header.module.css"
-import Modal from "../components/TimeoutModal"
+import React, { useCallback } from "react";
+import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Button from "../components/Button";
+import styles from "./header.module.css";
+import TimeoutModal from "../components/TimeoutModal";
 
-export const SHOW_INACTIVE_TIMEOUT_SECONDS = 5
-export const COUNTDOWN_SECONDS = 15
+export const SHOW_INACTIVE_TIMEOUT_SECONDS = 5;
+export const COUNTDOWN_SECONDS = 15;
 
 // The approach used in this component shows how to build a sign in and sign out
 // component that works on pages which support both client and server side
 // rendering, and avoids any flash incorrect content on initial page load.
 export default function Header() {
-  const { data: session, status } = useSession()
-  const time = React.useRef<number>(COUNTDOWN_SECONDS)
+  const { data: session, status } = useSession();
+  const time = React.useRef<number>(COUNTDOWN_SECONDS);
 
   const [showCountDown, setShowCountDown] = React.useState(
     SHOW_INACTIVE_TIMEOUT_SECONDS
-  )
+  );
 
   const handleSignOut = useCallback(() => {
-    signOut()
-  }, [signOut])
+    signOut();
+  }, [signOut]);
 
   const resetShowCountDown = useCallback(() => {
-    time.current = COUNTDOWN_SECONDS
-    setShowCountDown(SHOW_INACTIVE_TIMEOUT_SECONDS)
-  }, [setShowCountDown, time.current])
+    time.current = COUNTDOWN_SECONDS;
+    setShowCountDown(SHOW_INACTIVE_TIMEOUT_SECONDS);
+  }, [setShowCountDown, time.current]);
 
   React.useEffect(() => {
-    let showTimer: NodeJS.Timer
+    let showTimer: NodeJS.Timer;
 
     if (session?.user) {
       showTimer = setInterval(() => {
-        const countDown = showCountDown - 1
+        const countDown = showCountDown - 1;
         // console.log("Showing countdown in  " + showCountDown + " seconds")
-        setShowCountDown(countDown)
-      }, 1000)
+        setShowCountDown(countDown);
+      }, 1000);
     }
 
-    return () => clearInterval(showTimer)
-  }, [session?.user, showCountDown, setShowCountDown])
+    return () => clearInterval(showTimer);
+  }, [session?.user, showCountDown, setShowCountDown]);
 
   React.useEffect(() => {
     if (time.current <= 0) {
-      handleSignOut()
+      handleSignOut();
     }
-  }, [time.current])
+  }, [time.current]);
 
   React.useEffect(() => {
-    let countDown: NodeJS.Timer
+    let countDown: NodeJS.Timer;
     countDown = setInterval(() => {
       if (session?.user && showCountDown <= 0) {
-        time.current--
+        time.current--;
       }
-    }, 1000)
+    }, 1000);
 
-    return () => clearInterval(countDown)
-  }, [time.current, session?.user, showCountDown])
+    return () => clearInterval(countDown);
+  }, [time.current, session?.user, showCountDown]);
 
-  const loading = status === "loading"
+  const loading = status === "loading";
 
-  let showModal = showCountDown <= 0
+  let showModal = showCountDown <= 0;
 
   return (
     <header>
@@ -82,8 +82,8 @@ export default function Header() {
               <Button
                 className="relative z-10"
                 onClick={(e) => {
-                  e.preventDefault()
-                  signIn()
+                  e.preventDefault();
+                  signIn();
                 }}
               >
                 Sign in
@@ -106,8 +106,8 @@ export default function Header() {
               <Button
                 variant="primary"
                 onClick={(e) => {
-                  e.preventDefault()
-                  signOut()
+                  e.preventDefault();
+                  signOut();
                 }}
               >
                 Sign out
@@ -149,7 +149,7 @@ export default function Header() {
             <Button onClick={() => setShowCountDown(0)}>Show Modal</Button>
           </div>
 
-          <Modal
+          <TimeoutModal
             modalTitle="Need more time?"
             modalMessage={
               <>
@@ -166,9 +166,10 @@ export default function Header() {
             okAction={handleSignOut}
             cancelAction={resetShowCountDown}
             showModal={showModal}
+            ariaLabel="Session timeout modal"
           />
         </>
       ) : null}
     </header>
-  )
+  );
 }
