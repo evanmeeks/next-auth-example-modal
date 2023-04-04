@@ -25,8 +25,8 @@ export const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
       height={sqSize}
       viewBox={viewBox}
       aria-label={ariaLabel}
-      aria-valuemax="100"
-      aria-valuemin="0"
+      aria-valuemax={100}
+      aria-valuemin={0}
       aria-valuenow={percentage}
       role="progressbar"
     >

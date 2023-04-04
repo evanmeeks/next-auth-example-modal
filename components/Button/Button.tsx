@@ -3,7 +3,7 @@ import React from "react";
 interface ButtonProps {
   variant?: "primary" | "secondary" | "default";
   className?: string;
-  type?: "button" | "reset" | "submit" | undefined;
+  type: "button" | "reset" | "submit";
   children?: any;
   text?: string;
   disabled?: boolean;
@@ -33,8 +33,7 @@ export const Button: React.FC<ButtonProps> = ({
         "inline-block bg-blue-600 float-right text-white font-semibold text-xl border-2 rounded-xl py-3 px-9 m-2",
     };
 
-    const standardSelectors: string =
-      selectors[variant as keyof typeof selectors];
+    const standardSelectors: string = selectors[variant];
     if (_className) {
       const all = standardSelectors + " " + _className;
       setClassNames(all);
