@@ -3,7 +3,7 @@ import React from "react";
 interface ButtonProps {
   variant?: "primary" | "secondary" | "default";
   className?: string;
-  type: "button" | "reset" | "submit";
+  type?: "button" | "reset" | "submit";
   children?: any;
   text?: string;
   disabled?: boolean;
