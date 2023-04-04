@@ -13,7 +13,8 @@ interface ModalProps {
   cancelAction?: () => void;
   showModal: boolean;
   time?: number;
-  props: any;
+  props?: any;
+  ariaLabel?: string;
 }
 
 const TimeoutModal: React.FC<ModalProps> = React.forwardRef(
@@ -27,7 +28,7 @@ const TimeoutModal: React.FC<ModalProps> = React.forwardRef(
       okAction,
       cancelAction,
       showModal,
-      ...restProps
+      ...props
     },
     ref
   ) => {
@@ -57,7 +58,7 @@ const TimeoutModal: React.FC<ModalProps> = React.forwardRef(
     return (
       <ReactPortal wrapperId="react-portal-modal-container">
         <div
-          {...restProps}
+          {...props}
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-title"
